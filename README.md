@@ -1,10 +1,10 @@
-# Rock-Paper-Scissors Game
+# RockPaperScissor Game
 
 Welcome to the Rock-Paper-Scissors game! This is a command-line implementation of the classic game with an additional feature to verify that the computer didn't cheat using HMAC.
 
 ## Features
 
-- Play Rock-Paper-Scissors against the computer.
+- Play RockPaperScissor against the computer.
 - Verify the computer's move using HMAC for integrity.
 
 ## Installation
@@ -12,8 +12,8 @@ Welcome to the Rock-Paper-Scissors game! This is a command-line implementation o
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/yourusername/rock-paper-scissors.git
-    cd rock-paper-scissors
+    https://github.com/nexiath/rockpaperscissor
+    cd rockpaperscissor
     ```
 
 2. Install the dependencies:
@@ -33,4 +33,4 @@ Welcome to the Rock-Paper-Scissors game! This is a command-line implementation o
 To start the game, run:
 
 ```bash
-node dist/main.js
+node dist/index.js
