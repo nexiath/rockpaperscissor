@@ -25,14 +25,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const readline = __importStar(require("readline-sync"));
 const game_1 = require("./game");
-const playerName = readline.question('Entrez votre nom: ');
+const playerName = readline.question('Write your name: ');
 const game = new game_1.Game(playerName);
 while (true) {
     game.playRound();
     game.showLeaderboard();
-    const playAgain = readline.question('Voulez-vous rejouer ? (oui/non): ').toLowerCase();
-    if (playAgain !== 'oui') {
+    const playAgain = readline.question('Do u want to play again ? (yes/no): ').toLowerCase();
+    if (playAgain !== 'yes') {
         break;
     }
 }
-console.log('Merci d\'avoir joué !');
+console.log('Thanks for playing!');

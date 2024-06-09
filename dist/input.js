@@ -23,12 +23,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPlayerMove = void 0;
+exports.getVerificationInputs = exports.askForVerification = exports.getPlayerMove = void 0;
 const readline = __importStar(require("readline-sync"));
 const moves_1 = require("./moves");
-// Player movre
+// Player movement
 function getPlayerMove() {
-    const moveInput = readline.question('Entrez votre mouvement (Rock, Paper, Scissors): ').toLowerCase();
+    const moveInput = readline.question('Chose a movement (Rock, Paper, Scissors): ').toLowerCase();
     if (moveInput === 'rock') {
         return moves_1.Moves.Rock;
     }
@@ -43,3 +43,30 @@ function getPlayerMove() {
     }
 }
 exports.getPlayerMove = getPlayerMove;
+// Hash verification if player want or not
+function askForVerification() {
+    const verifyInput = readline.question('Do u want to verify if the computer have cheat or not ? (yes/no): ').toLowerCase();
+    return verifyInput === 'yes';
+}
+exports.askForVerification = askForVerification;
+// Verfiication entry
+function getVerificationInputs() {
+    const moveInput = readline.question('Write the movement of the computer (Rock, Paper, Scissors): ').toLowerCase();
+    const secret = readline.question('Write the secret key: ');
+    const hash = readline.question('Write the hash: ');
+    let move;
+    if (moveInput === 'rock') {
+        move = moves_1.Moves.Rock;
+    }
+    else if (moveInput === 'paper') {
+        move = moves_1.Moves.Paper;
+    }
+    else if (moveInput === 'scissors') {
+        move = moves_1.Moves.Scissors;
+    }
+    else {
+        throw new Error('Invalid entry');
+    }
+    return { move, secret, hash };
+}
+exports.getVerificationInputs = getVerificationInputs;
