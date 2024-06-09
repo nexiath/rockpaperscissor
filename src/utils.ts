@@ -1,18 +1,24 @@
-export enum Moves {
-    Rock = 'rock',
-    Paper = 'paper',
-    Scissors = 'scissors'
+import { Moves } from './moves';
+
+// Mouvement aléatoire
+export function getRandomMove(): Moves {
+    const moves = [Moves.Rock, Moves.Paper, Moves.Scissors];
+    const randomIndex = Math.floor(Math.random() * moves.length);
+    return moves[randomIndex];
 }
 
-export function determineGagnant(playerMove: Moves, computerMove: Moves): string {
-    if(playerMove === computerMove){
-        return "tie"
+
+// Déterminer le gagnant
+export function determineWinner(movePlayer: Moves, moveComputer: Moves): string {
+    if (movePlayer === moveComputer) {
+        return "Égalité";
     }
-    if((playerMove === Moves.Rock && computerMove === Moves.Scissors) || 
-    (playerMove === Moves.Paper && computerMove === Moves.Paper) ||
-    (playerMove === Moves.Scissors && computerMove === Moves.Rock)){
-        return "You win !"
+
+    if ((movePlayer === Moves.Rock && moveComputer === Moves.Scissors) ||
+        (movePlayer === Moves.Paper && moveComputer === Moves.Rock) ||
+        (movePlayer === Moves.Scissors && moveComputer === Moves.Paper)) {
+        return "Vous avez gagné";
     } else {
-        return "You Lose !"
+        return "Vous avez perdu";
     }
 }

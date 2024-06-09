@@ -1,50 +1,40 @@
-import { Player } from './player';
-import { Moves } from './moves';
-import { getRandomMove, determineWinner } from './utils';
-import { getPlayerMove } from './input';
-
-export class Game {
-    private player: Player;
-    private computer: Player;
-    private draws: number;
-    private playerMove: Moves | null;
-    private computerMove: Moves | null;
-
-    constructor(playerName: string) {
-        this.player = new Player(playerName);
-        this.computer = new Player("Computer");
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Game = void 0;
+const player_1 = require("./player");
+const utils_1 = require("./utils");
+const input_1 = require("./input");
+class Game {
+    constructor(playerName) {
+        this.player = new player_1.Player(playerName);
+        this.computer = new player_1.Player("Computer");
         this.draws = 0;
         this.playerMove = null;
         this.computerMove = null;
     }
-
     // Play a round
-    public playRound(): void {
-        this.computerMove = getRandomMove();
-
-        this.playerMove = getPlayerMove();
+    playRound() {
+        this.computerMove = (0, utils_1.getRandomMove)();
+        this.playerMove = (0, input_1.getPlayerMove)();
         if (!this.playerMove) {
             console.log('Mouvement invalide, essayez encore.');
             return;
         }
-
         console.log(`Ordinateur: ${this.computerMove}`);
-
-        const result = determineWinner(this.playerMove, this.computerMove);
+        const result = (0, utils_1.determineWinner)(this.playerMove, this.computerMove);
         console.log(result);
-
         if (result === "Vous avez gagné") {
             this.player.increaseScore();
-        } else if (result === "Vous avez perdu") {
+        }
+        else if (result === "Vous avez perdu") {
             this.computer.increaseScore();
-        } else {
+        }
+        else {
             this.draws += 1;
         }
-
     }
-
     // Score
-    public showLeaderboard(): void {
+    showLeaderboard() {
         console.log("\n--- Leaderboard ---");
         console.log(`Joueur (${this.player.nom}): ${this.player.score}`);
         console.log(`Ordinateur: ${this.computer.score}`);
@@ -52,3 +42,4 @@ export class Game {
         console.log("-------------------\n");
     }
 }
+exports.Game = Game;
