@@ -27,7 +27,6 @@ exports.Game = void 0;
 const crypto = __importStar(require("crypto"));
 const player_1 = require("./player");
 const utils_1 = require("./utils");
-const input_1 = require("./input");
 class Game {
     constructor(playerName) {
         this.player = new player_1.Player(playerName);
@@ -35,21 +34,14 @@ class Game {
         this.draws = 0;
         this.playerMove = null;
         this.computerMove = null;
-        this.secretKey = crypto.randomBytes(16).toString('hex');
+        this.roundSecret = crypto.randomBytes(16).toString('hex');
+        this.hashedComputerMove = '';
     }
-    // Play round
     playRound() {
-        this.computerMove = (0, utils_1.getRandomMove)();
-        const roundSecret = crypto.randomBytes(16).toString('hex');
-        const hashedComputerMove = (0, utils_1.generateUniqueHash)(this.computerMove, roundSecret);
-        console.log(`Computer chose his movement. Hash: ${hashedComputerMove}`);
-        this.playerMove = (0, input_1.getPlayerMove)();
         if (!this.playerMove) {
             console.log('Movement not valid, try again.');
             return;
         }
-        console.log(`Computer: ${this.computerMove}`);
-        console.log(`Secret key of this round: ${roundSecret}`);
         const result = (0, utils_1.determineWinner)(this.playerMove, this.computerMove);
         console.log(result);
         if (result === "You win") {
@@ -61,18 +53,10 @@ class Game {
         else {
             this.draws += 1;
         }
-        if ((0, input_1.askForVerification)()) {
-            const { move, secret, hash } = (0, input_1.getVerificationInputs)();
-            const isVerified = (0, utils_1.verifyHash)(move, secret, hash);
-            if (isVerified) {
-                console.log("Verification is good. Computer dont cheat.");
-            }
-            else {
-                console.log("Verification not good. Computer maybe cheat.");
-            }
-        }
     }
-    // Score
+    verifyHash(move, secret, hash) {
+        return (0, utils_1.verifyHash)(move, secret, hash);
+    }
     showLeaderboard() {
         console.log("\n--- Leaderboard ---");
         console.log(`Player (${this.player.nom}): ${this.player.score}`);

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors Game</title>
+</head>
+<body>
+    <h1>Rock Paper Scissors Game</h1>
+    <button id="startButton">Start Game</button>
+    <div id="hashInfo">
+        <p>Hashed Computer Move: <span id="hashedComputerMove"></span></p>
+    </div>
+    <div id="gameSection" style="display: none;">
+        <select id="playerMove">
+            <option value="Rock">Rock</option>
+            <option value="Paper">Paper</option>
+            <option value="Scissors">Scissors</option>
+        </select>
+        <button id="playButton">Play Round</button>
+    </div>
+    <div id="result"></div>
+    <div id="leaderboard"></div>
+
+    <h2>Verify Hash</h2>
+    <input type="text" id="verifyMove" placeholder="Move (Rock, Paper, Scissors)">
+    <input type="text" id="verifySecret" placeholder="Secret Key">
+    <input type="text" id="verifyHash" placeholder="Hash">
+    <button id="verifyButton">Verify</button>
+    <div id="verificationResult"></div>
+
+    <h2>Round Information</h2>
+    <div id="roundInfo">
+        <p>Round Secret: <span id="roundSecret"></span></p>
+    </div>
+
+    <div id="replaySection" style="display: none;">
+        <button id="replayButton">Do u want to play again?</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        document.getElementById('startButton').addEventListener('click', () => {
+            socket.emit('getHash');
+            document.getElementById('startButton').style.display = 'none';
+            document.getElementById('gameSection').style.display = 'block';
+        });
+
+        document.getElementById('playButton').addEventListener('click', () => {
+            const playerMove = document.getElementById('playerMove').value;
+            socket.emit('playRound', playerMove);
+        });
+
+        document.getElementById('verifyButton').addEventListener('click', () => {
+            const move = document.getElementById('verifyMove').value;
+            const secret = document.getElementById('verifySecret').value;
+            const hash = document.getElementById('verifyHash').value;
+            socket.emit('verifyHash', { move, secret, hash });
+        });
+
+        document.getElementById('replayButton').addEventListener('click', () => {
+            socket.emit('getHash');
+            document.getElementById('replaySection').style.display = 'none';
+            document.getElementById('gameSection').style.display = 'block';
+        });
+
+        socket.on('hash', (data) => {
+            document.getElementById('hashedComputerMove').innerText = data.hashedComputerMove;
+        });
+
+        socket.on('update', (data) => {
+            document.getElementById('result').innerHTML = `
+                <p>Player Move: ${data.playerMove}</p>
+                <p>Computer Move: ${data.computerMove}</p>
+            `;
+            document.getElementById('leaderboard').innerHTML = `
+                <p>Player Score: ${data.playerScore}</p>
+                <p>Computer Score: ${data.computerScore}</p>
+                <p>Draws: ${data.draws}</p>
+            `;
+            document.getElementById('roundSecret').innerText = data.roundSecret;
+
+            document.getElementById('gameSection').style.display = 'none';
+            document.getElementById('replaySection').style.display = 'block';
+        });
+
+        socket.on('verificationResult', (message) => {
+            document.getElementById('verificationResult').innerText = message;
+        });
+    </script>
+</body>
+</html>

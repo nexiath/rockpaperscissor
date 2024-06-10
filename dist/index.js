@@ -22,17 +22,48 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const readline = __importStar(require("readline-sync"));
+const express_1 = __importDefault(require("express"));
+const http_1 = __importDefault(require("http"));
+const socket_io_1 = require("socket.io");
 const game_1 = require("./game");
-const playerName = readline.question('Write your name: ');
-const game = new game_1.Game(playerName);
-while (true) {
-    game.playRound();
-    game.showLeaderboard();
-    const playAgain = readline.question('Do u want to play again ? (yes/no): ').toLowerCase();
-    if (playAgain !== 'yes') {
-        break;
-    }
-}
-console.log('Thanks for playing!');
+const crypto = __importStar(require("crypto"));
+const utils_1 = require("./utils");
+const app = (0, express_1.default)();
+const server = http_1.default.createServer(app);
+const io = new socket_io_1.Server(server);
+app.use(express_1.default.static('src/public'));
+io.on('connection', (socket) => {
+    const game = new game_1.Game('Player');
+    socket.on('getHash', () => {
+        game.computerMove = (0, utils_1.getRandomMove)();
+        game.roundSecret = crypto.randomBytes(16).toString('hex');
+        game.hashedComputerMove = (0, utils_1.generateUniqueHash)(game.computerMove, game.roundSecret);
+        socket.emit('hash', {
+            hashedComputerMove: game.hashedComputerMove
+        });
+    });
+    socket.on('playRound', (playerMove) => {
+        game.playerMove = playerMove;
+        game.playRound();
+        socket.emit('update', {
+            playerMove: game.playerMove,
+            computerMove: game.computerMove,
+            playerScore: game['player'].score,
+            computerScore: game['computer'].score,
+            draws: game['draws'],
+            roundSecret: game.roundSecret
+        });
+    });
+    socket.on('verifyHash', (data) => {
+        const isVerified = game.verifyHash(data.move, data.secret, data.hash);
+        socket.emit('verificationResult', isVerified ? "Verification is good. Computer doesn't cheat." : "Verification not good. Computer maybe cheats.");
+    });
+});
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
