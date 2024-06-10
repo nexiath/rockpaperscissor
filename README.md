@@ -1,6 +1,6 @@
 # RockPaperScissor Game
 
-Welcome to the Rock-Paper-Scissors game! This is a command-line implementation of the classic game with an additional feature to verify that the computer didn't cheat using HMAC.
+Welcome to the Rock-Paper-Scissors game with a feature to verify that the computer didn't cheat using HMAC.
 
 ## Features
 
@@ -33,4 +33,4 @@ Welcome to the Rock-Paper-Scissors game! This is a command-line implementation o
 To start the game, run:
 
 ```bash
-node dist/index.js
+npm start
